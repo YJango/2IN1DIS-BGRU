@@ -192,8 +192,7 @@ class M2MGRU(object):
         #eval functions
         self.art_loss_train = T.mean(lasagne.objectives.squared_error(self.l_art_out,self.art_target))
         self.get_loss = theano.function([self.l_in.input_var, self.hard_target], self.hard_loss_eval)
-        self.updates = lasagne.updates.adam((self.hard_loss_train*(1-lamda2) + self.art_loss_train*lamda2)*(1-self.lamda) + self.soft_loss_train*self.lamda + self.l2_penalty, self.all_params, learning_rate=self.lr)
-        
+        self.updates = lasagne.updates.adam((self.hard_loss_train*(1-lamda2) + self.art_loss_train*lamda2)*(1-self.lamda) + (self.soft_loss_train*(1-lamda2) + self.art_loss_train*lamda2)*self.lamda + self.l2_penalty, self.all_params, learning_rate=self.lr)
         #train function
         self.train = theano.function([self.l_in.input_var, self.hard_target, self.art_target, self.soft_targets], updates=self.updates)
 
